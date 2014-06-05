@@ -13,6 +13,7 @@ $tagsWanted = array(
     'FSSC_Company_Number'
 );
 
+$table = array();
 if (file_exists($fileName)) {
 
     $word = \PhpOffice\PhpWord\IOFactory::load($fileName);
@@ -27,20 +28,41 @@ if (file_exists($fileName)) {
                 isset($tag['property']['is_date']) && $tag['property']['is_date']
             )
         ) {
-            echo $tag['property']['alias'] . ': ' .
-                $tag['content']['content'];
 
+            $float = null;
             if ($isTag) {
+                if (
+                    is_numeric($tag['content']['content'])
+                ) {
+                    $float = (float) $tag['content']['content'];
+                    if (is_float($float)) {
+                        $float = ' Is float: true';
+                    } else {
+                        $float = ' Is float: false';
+                    }
 
-                /*if (is_float($tag['content']['content'])) {
-                    echo ' Is float: true';
                 } else {
-                    echo ' Is float: false';
-                }*/
+                    $float = ' Is float: false';
+                }
             }
-
-            echo PHP_EOL;
+            $row = array(
+                $tag['property']['alias'],
+                $tag['content']['content'],
+                $float
+            );
+            $table[] = $row;
         }
+    }
+
+    echo '<table border="1" style="border-collapse:collapse;">';
+    foreach ($table as $row) {
+        echo '<tr><td>';
+        echo $row[0];
+        echo '<td>';
+        echo $row[1];
+        echo '</td><td>';
+        echo $row[2];
+        echo '</td></tr>';
     }
 
     // Extracts document.xml
