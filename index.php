@@ -13,19 +13,32 @@ $tagsWanted = array(
     'FSSC_Company_Number'
 );
 
+$header = array(
+    'Alias',
+    'Tag',
+    'Content',
+    'Checkbox selected',
+    'Is float'
+);
+
 $table = array();
+$table[] = $header;
+
 if (file_exists($fileName)) {
 
     $word = \PhpOffice\PhpWord\IOFactory::load($fileName);
     $tags = $word->getTags();
     if (!empty($tags)) {
-        $table = array();
         foreach ($tags as $tag) {
+
             $isTag = isset($tag['property']['tag']) && in_array(
-                    $tag['property']['tag'],
-                    $tagsWanted
-                );
-            if (isset($tag['property']) && isset($tag['property']['alias']) && isset($tag['property']['tag'])
+                $tag['property']['tag'],
+                $tagsWanted
+            );
+
+            if (isset($tag['property']) &&
+                isset($tag['property']['alias']) &&
+                isset($tag['property']['tag'])
 /**             &&
                 (
                     $isTag ||
@@ -34,29 +47,32 @@ if (file_exists($fileName)) {
                 )
 **/
             ) {
+                $isCheckBox = isset($tag['property']['is_checkbox']) && $tag['property']['is_checkbox'];
 
                 $float = null;
                 if ($isTag) {
-                    if (
-                    is_numeric($tag['content']['content'])
-                    ) {
+                    if (is_numeric($tag['content']['content'])) {
                         $float = (float)$tag['content']['content'];
                         if (is_float($float)) {
-                            $float = ' Is float: true';
+                            $float = 'true';
                         } else {
-                            $float = ' Is float: false';
+                            $float = 'false';
                         }
-
                     } else {
-                        $float = ' Is float: false';
+                        $float = 'false';
                     }
                 }
 
-                
+                $checkBoxResult = null;
+                if ($isCheckBox) {
+                    $checkBoxResult = $tag['property']['checkbox_selected'];
+                }
+
                 $row = array(
                     $tag['property']['alias'],
                     $tag['property']['tag'],
                     $tag['content']['content'],
+                    $checkBoxResult,
                     $float
                 );
                 $table[] = $row;
@@ -74,6 +90,8 @@ if (file_exists($fileName)) {
                 echo $row[2];
                 echo '</td><td>';
                 echo $row[3];
+                echo '</td><td>';
+                echo $row[4];
                 echo '</td></tr>';
             }
         }
