@@ -25,12 +25,14 @@ if (file_exists($fileName)) {
                     $tag['property']['tag'],
                     $tagsWanted
                 );
-            if (isset($tag['property']) && isset($tag['property']['alias']) &&
+            if (isset($tag['property']) && isset($tag['property']['alias']) && isset($tag['property']['tag'])
+/**             &&
                 (
                     $isTag ||
                     isset($tag['property']['is_checkbox']) && $tag['property']['is_checkbox'] ||
                     isset($tag['property']['is_date']) && $tag['property']['is_date']
                 )
+**/
             ) {
 
                 $float = null;
@@ -50,8 +52,10 @@ if (file_exists($fileName)) {
                     }
                 }
 
+                
                 $row = array(
                     $tag['property']['alias'],
+                    $tag['property']['tag'],
                     $tag['content']['content'],
                     $float
                 );
@@ -66,8 +70,10 @@ if (file_exists($fileName)) {
                 echo $row[0];
                 echo '<td>';
                 echo $row[1];
-                echo '</td><td>';
+                echo '<td>';
                 echo $row[2];
+                echo '</td><td>';
+                echo $row[3];
                 echo '</td></tr>';
             }
         }
