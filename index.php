@@ -75,7 +75,10 @@ if (file_exists($fileName)) {
                     $checkBoxResult,
                     $float
                 );
-                $table[] = $row;
+
+                if (!($checkBoxResult == '0')) {  
+                    $table[] = $row;
+                }
             }
         }
 
